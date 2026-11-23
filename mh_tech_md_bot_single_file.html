@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#070b16">
+<title>MH TECH MD BOT | Pairing</title>
+<style>
+:root{--bg:#070b16;--card:#111a2b;--line:#24344d;--text:#f3f7ff;--muted:#9aabc5;--accent:#35e0b3;--accent2:#7c6cff}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at top,#172b46 0,#070b16 55%);color:var(--text);font:16px system-ui,-apple-system,Segoe UI,Roboto,sans-serif;display:flex;justify-content:center;padding:24px 14px}
+main{width:100%;max-width:480px}.hero{text-align:center;padding:18px 12px 24px}.logo{width:96px;height:96px;border-radius:26px;object-fit:cover;border:2px solid #35e0b380;box-shadow:0 0 35px #35e0b326}.brand{font-size:27px;font-weight:850;letter-spacing:1px;margin:15px 0 5px}.subtitle{color:var(--muted);margin:0}.status{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:#111a2b;border-radius:30px;padding:7px 13px;font-size:12px;margin-top:15px;color:var(--muted)}.dot{width:8px;height:8px;border-radius:50%;background:#e5a23b}.panel{background:linear-gradient(145deg,#121d30,#0d1423);border:1px solid var(--line);border-radius:23px;padding:22px;box-shadow:0 20px 60px #0005}.panel h2{font-size:20px;margin:0 0 7px}.hint{font-size:13px;color:var(--muted);line-height:1.5;margin:0 0 19px}.label{font-size:13px;color:#c8d6e9;display:block;margin:0 0 8px}.row{display:flex;gap:9px}.country{width:95px;flex-shrink:0}.input{width:100%;background:#080f1c;color:white;border:1px solid #2b3d59;border-radius:12px;padding:14px;font:inherit;outline:none}.input:focus{border-color:var(--accent);box-shadow:0 0 0 3px #35e0b318}.btn{width:100%;border:0;border-radius:12px;padding:14px;font-weight:800;font-size:15px;cursor:pointer;background:linear-gradient(100deg,var(--accent),#8affd9);color:#062019;margin-top:14px}.btn:disabled{opacity:.55;cursor:wait}.result{display:none;margin-top:18px;border:1px dashed #35e0b36b;background:#071a1a;border-radius:14px;padding:17px;text-align:center}.code{font-size:27px;letter-spacing:4px;font-weight:900;color:var(--accent);margin:8px 0 12px;word-break:break-word}.copy{background:#1b2a40;color:white;border:1px solid #334a68;border-radius:9px;padding:9px 15px;cursor:pointer}.message{font-size:13px;margin-top:13px;color:var(--muted);min-height:18px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:14px}.stat{border:1px solid var(--line);background:#0d1524;border-radius:13px;text-align:center;padding:13px 6px}.stat strong{display:block;font-size:20px;color:var(--accent)}.stat span{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}.channel{display:block;text-decoration:none;text-align:center;border:1px solid #31435e;border-radius:12px;padding:13px;color:#dce8fb;margin-top:15px;background:#101a2a}.foot{text-align:center;color:#657893;font-size:12px;padding:20px 5px}.foot b{color:#a8bad3}
+</style>
+</head>
+<body>
+<main>
+<header class="hero">
+<img class="logo" id="brandLogo" alt="Bot logo">
+<div class="brand" id="brandName">MH TECH MD BOT</div>
+<p class="subtitle">Secure WhatsApp pairing portal</p>
+<div class="status"><span class="dot" id="statusDot"></span><span id="statusText">Checking server…</span></div>
+</header>
+<section class="panel">
+<h2>Get Pairing Code</h2>
+<p class="hint">Enter your WhatsApp number with country code. Keep your phone nearby and enter the code in WhatsApp → Linked devices.</p>
+<label class="label" for="phone">WhatsApp number</label>
+<div class="row">
+<input class="input country" id="country" value="92" inputmode="numeric" aria-label="Country code">
+<input class="input" id="phone" placeholder="3XXXXXXXXX" inputmode="numeric" autocomplete="tel-national">
+</div>
+<button class="btn" id="pairBtn">GET PAIRING CODE</button>
+<div class="result" id="result">
+<div class="label">Your pairing code</div>
+<div class="code" id="pairCode">--------</div>
+<button class="copy" id="copyBtn">Copy code</button>
+<div class="message" id="expiry">Use this code promptly in WhatsApp.</div>
+</div>
+<div class="message" id="message" role="status"></div>
+<div class="stats">
+<div class="stat"><strong id="statTotal">—</strong><span>Total requests</span></div>
+<div class="stat"><strong id="statConnected">—</strong><span>Connected</span></div>
+<div class="stat"><strong id="statToday">—</strong><span>Today</span></div>
+</div>
+<a class="channel" id="channelLink" href="#" target="_blank" rel="noopener">Join Official WhatsApp Channel ↗</a>
+</section>
+<footer class="foot">Powered by <b id="ownerName">MH TECH</b><br>Never share your pairing code with anyone.</footer>
+</main>
+<script>
+/* ===================== BRAND + API CONFIG =====================
+   Change values here only. The pairing API must be hosted separately.
+   This page cannot create Baileys sessions without a working backend.
+============================================================== */
+const CONFIG = {
+  brandName: "MH TECH MD BOT",
+  logoUrl: "",
+  ownerName: "MH TECH",
+  channelLink: "",
+  backendUrl: "https://mhtechmdbot.kesug.com",
+  healthEndpoint: "/api/health",
+  statsEndpoint: "/api/stats",
+  pairEndpoint: "/api/pair",
+  requestTimeoutMs: 25000
+};
+const $ = id => document.getElementById(id);
+$("brandName").textContent = CONFIG.brandName;
+$("ownerName").textContent = CONFIG.ownerName;
+$("brandLogo").src = CONFIG.logoUrl || "data:image/svg+xml," + encodeURIComponent('<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><rect width=\"100\" height=\"100\" rx=\"25\" fill=\"#101d32\"/><text x=\"50\" y=\"59\" font-size=\"28\" font-family=\"Arial\" font-weight=\"bold\" text-anchor=\"middle\" fill=\"#35e0b3\">MH</text></svg>');
+if(CONFIG.channelLink){$("channelLink").href=CONFIG.channelLink}else{$("channelLink").style.display="none"}
+const api = path => CONFIG.backendUrl.replace(/\/+$/,"") + path;
+function setStatus(ok,text){$("statusText").textContent=text;$("statusDot").style.background=ok?"#35e0b3":"#e45c70"}
+async function request(url,options={}) {
+ const controller=new AbortController(), timer=setTimeout(()=>controller.abort(),CONFIG.requestTimeoutMs);
+ try { const r=await fetch(url,{...options,signal:controller.signal,headers:{"Content-Type":"application/json",...(options.headers||{})}});
+ const data=await r.json().catch(()=>({}));
+ if(!r.ok) throw new Error(data.message||data.error||`Server returned HTTP ${r.status}`);
+ return data;
+ } finally {clearTimeout(timer)}
+}
+async function checkServer(){
+ try{await request(api(CONFIG.healthEndpoint));setStatus(true,"Server online")}
+ catch(e){setStatus(false,"Server unavailable")}
+}
+async function loadStats(){
+ try{const d=await request(api(CONFIG.statsEndpoint));$("statTotal").textContent=d.totalUsers??d.total??"—";$("statConnected").textContent=d.connectedSessions??d.connected??"—";$("statToday").textContent=d.newToday??d.today??"—"}
+ catch(e){}
+}
+$("pairBtn").addEventListener("click",async()=>{
+ const digits=($("country").value+$("phone").value).replace(/\D/g,"");
+ if(digits.length<10||digits.length>15){$("message").textContent="Please enter a valid number with country code.";return}
+ $("pairBtn").disabled=true;$("pairBtn").textContent="REQUESTING…";$("message").textContent="Contacting pairing server…";$("result").style.display="none";
+ try{
+  const d=await request(api(CONFIG.pairEndpoint),{method:"POST",body:JSON.stringify({number:digits,brand:{name:CONFIG.brandName,ownerName:CONFIG.ownerName,channel:CONFIG.channelLink}})});
+  const code=String(d.code||d.pairingCode||d.pair_code||"").replace(/[^A-Z0-9]/gi,"").toUpperCase();
+  if(!code)throw new Error(d.message||"The API response did not contain a pairing code.");
+  $("pairCode").textContent=code.length>4?code.slice(0,4)+"-"+code.slice(4):code;
+  $("expiry").textContent=d.expiresIn?`Code expires in ${d.expiresIn} seconds.`:"Enter this code in WhatsApp Linked devices.";
+  $("result").style.display="block";$("message").textContent=d.message||"Pairing code generated.";
+ }catch(e){$("message").textContent=e.name==="AbortError"?"Request timed out. Check your backend server.":e.message}
+ finally{$("pairBtn").disabled=false;$("pairBtn").textContent="GET PAIRING CODE"}
+});
+$("copyBtn").addEventListener("click",async()=>{
+ const code=$("pairCode").textContent.replace(/-/g,"");
+ try{await navigator.clipboard.writeText(code);$("copyBtn").textContent="Copied!"}
+ catch(e){$("message").textContent="Select and copy the code manually."}
+});
+checkServer();loadStats();setInterval(checkServer,30000);setInterval(loadStats,45000);
+</script>
+</body>
+</html>
